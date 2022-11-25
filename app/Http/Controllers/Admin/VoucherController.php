@@ -23,7 +23,7 @@ class VoucherController extends Controller
         ->orderBy('id', 'DESC')->paginate(10);
         if ($voucher) {
             $voucher->getCollection()->transform(function ($value) {
-                $value->image = env('APP_IMAGE') . 'voucher/' . $value->image;
+                $value->image = config('app.linkImage') . 'voucher/' . $value->image;
                 return $value;
             });
         }
@@ -119,7 +119,7 @@ class VoucherController extends Controller
                 'start' => $voucher->starts_at,
                 'end' => $voucher->expires_at,
             ];
-            $image = env('APP_IMAGE'). 'voucher/' . $voucher->image;
+            $image = config('app.linkImage'). 'voucher/' . $voucher->image;
             return $this->responseSuccess(['info' => $params,'image' => $image ]);
         } catch(\Throwable $th) {
             Log::info($th);

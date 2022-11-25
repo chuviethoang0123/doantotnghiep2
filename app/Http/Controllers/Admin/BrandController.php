@@ -21,7 +21,7 @@ class BrandController extends Controller
                 return $params = [
                     'id' => $value->id,
                     'name' => $value->name,
-                    'image' => env('APP_IMAGE') . 'brand/' . $value->image,
+                    'image' => config('app.linkImage') . 'brand/' . $value->image,
                 ];
             });
         }

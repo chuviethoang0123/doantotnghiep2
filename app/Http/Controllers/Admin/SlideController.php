@@ -20,7 +20,7 @@ class SlideController extends Controller
                 return $params = [
                     'slide_id' => $value->id,
                     'slide_status' => $value->status,
-                    'slide_image' => env('APP_IMAGE') . 'slide/' . $value->image,
+                    'slide_image' => config('app.linkImage') . 'slide/' . $value->image,
                     'created_at' => $value->created_at,
                     'updated_at' => $value->updated_at
                 ];

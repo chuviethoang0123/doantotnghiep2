@@ -28,7 +28,7 @@ class ProductController extends Controller
                 return $params = [
                     'id' => $value->id,
                     'name' => $value->name,
-                    'image' => env('APP_IMAGE') . 'product/' . $value->image,
+                    'image' => config('app.linkImage') . 'product/' . $value->image,
                     'price' => $value->price,
                     'discount' => $value->discount,
                     'selling' => $value->selling
@@ -179,7 +179,7 @@ class ProductController extends Controller
             $listImage = [];
             foreach($product_image as $key => $image) {
                 $param = [
-                    'url' => env('APP_IMAGE'). 'product_image/' . $image->product_image_name,
+                    'url' => config('app.linkImage'). 'product_image/' . $image->product_image_name,
                     'uid' => '-'.$key,
                     'id' => $image->id,
                     'status' => 'done'
@@ -198,7 +198,7 @@ class ProductController extends Controller
                 'discount' => $product->discount,
                 'brand' => $product->brand_id,
                 'category' => $product->category_id,
-                'image' => env('APP_IMAGE'). 'product/' . $product->image,
+                'image' => config('app.linkImage'). 'product/' . $product->image,
                 'fileList' => $listImage
             ];
             return $this->responseSuccess($params);

@@ -72,7 +72,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
-        $user->image = env('APP_IMAGE'). 'user/' . $user->image; 
+        $user->image = config('app.linkImage'). 'user/' . $user->image; 
         return $this->responseSuccess($user);
     }
 
