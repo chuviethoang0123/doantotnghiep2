@@ -391,6 +391,7 @@ class HomeController extends Controller
 
     public function listVoucher() {
         $voucher = Voucher::orderBy('id', 'desc')->take(4)->get();
+        Log::info($voucher);
         $params = [];
         $status = true;
         foreach($voucher as $vc) {
@@ -423,11 +424,11 @@ class HomeController extends Controller
             return $this->responseError($params);
         } else {
             $voucher = Voucher::where('code', $request->code_voucher)->first();
-            $userVoucher = UserVoucher::where('user_id', $request->user_id)->where('voucher_id', $voucher->id)->get();
             if (!$voucher) {
                 $params = 'Voucher bạn nhập không tồn tại';
                 return $this->responseError($params);
             } else {
+                $userVoucher = UserVoucher::where('user_id', $request->user_id)->where('voucher_id', $voucher->id)->get();
                 if (count($userVoucher) >= $voucher->max_uses_user) {
                     $params = 'Voucher bạn nhập đã sử dụng quá lần sử dụng';
                     return $this->responseError($params);

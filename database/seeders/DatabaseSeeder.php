@@ -245,7 +245,7 @@ class DatabaseSeeder extends Seeder
             'discount_amount' => 80000,
             'percentage' => 20,
             'starts_at' => '2022-02-24 00:00:00.000000',
-            'expires_at' => '2022-03-24 00:00:00.000000'
+            'expires_at' => '2022-12-24 00:00:00.000000'
         ]);
         DB::table('vouchers')->insert([
             'code' =>'GIAMGIA03',
@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
             'discount_amount' => 80000,
             'percentage' => 20,
             'starts_at' => '2022-02-24 00:00:00.000000',
-            'expires_at' => '2022-03-24 00:00:00.000000'
+            'expires_at' => '2022-12-24 00:00:00.000000'
         ]);
     }
 }
