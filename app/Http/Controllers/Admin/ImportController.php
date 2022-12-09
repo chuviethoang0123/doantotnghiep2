@@ -13,7 +13,7 @@ class ImportController extends Controller
     public function getProductImport(Request $request) {
         $product = Product::where('name', 'like', "%$request->search%")->get();
         foreach ($product as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
         return $this->responseSuccess($product);
     }

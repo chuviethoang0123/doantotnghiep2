@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ResetPasswordRequest extends Notification implements ShouldQueue
 {
@@ -41,7 +42,7 @@ class ResetPasswordRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = url(env('FONTEND_URL') . 'forgot?token=' . $this->token);
+        $url = url(env('FRONTEND_URL') . 'forgot?token=' . $this->token);
         return (new MailMessage)
                 ->view('mail', ['url' => $url])
                 ->subject("Đặt lại mật khẩu");

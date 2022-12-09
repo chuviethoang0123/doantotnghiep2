@@ -35,10 +35,10 @@ class HomeController extends Controller
         $banner = Slide::where(['status'=> 0])->orderBy('id', 'DESC')->limit(4)->get();
 
         foreach($slide as $sl) {
-            $sl->image = config('app.linkImage'). 'slide/' . $sl->image;
+            $sl->image = config('app.linkImage'). '/uploads/slide/' . $sl->image;
         }
         foreach($banner as $sl) {
-            $sl->image = config('app.linkImage'). 'slide/' . $sl->image;
+            $sl->image = config('app.linkImage'). '/uploads/slide/' . $sl->image;
         }
         return $this->responseSuccess(['slide' => $slide, 'banner' => $banner]);
     }
@@ -46,7 +46,7 @@ class HomeController extends Controller
     public function homeBrand() {
         $brand = Brand::all();
         foreach($brand as $br) {
-            $br->image = config('app.linkImage'). 'brand/' . $br->image;
+            $br->image = config('app.linkImage'). '/uploads/brand/' . $br->image;
         }
         return $this->responseSuccess($brand);
     }
@@ -54,7 +54,7 @@ class HomeController extends Controller
     public function homeProduct() {
         $product = Product::orderBy('id', 'DESC')->limit(8)->get();
         foreach($product as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
 
         return $this->responseSuccess(['product' => $product]);
@@ -63,7 +63,7 @@ class HomeController extends Controller
     public function productDiscount() {
         $productDiscount = Product::whereNotNull('discount')->orderBy('id', 'DESC')->limit(8)->get();
         foreach($productDiscount as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
 
         return $this->responseSuccess(['productDiscount' => $productDiscount]);
@@ -72,7 +72,7 @@ class HomeController extends Controller
     public function productSelling() {
         $productSelling = Product::orderBy('selling', 'DESC')->limit(8)->get();
         foreach($productSelling as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
 
         return $this->responseSuccess(['productSelling' => $productSelling]);
@@ -87,14 +87,14 @@ class HomeController extends Controller
     public function brand() {
         $brand = Brand::all();
         foreach($brand as $br) {
-            $br->image =  config('app.linkImage'). 'brand/' . $br->image;
+            $br->image =  config('app.linkImage'). '/uploads/brand/' . $br->image;
         }
         return $this->responseSuccess($brand);
     }
 
     public function productDetail(Request $request) {
         $product = Product::findOrFail($request->id);
-        $product->image = config('app.linkImage'). 'product/' . $product->image;
+        $product->image = config('app.linkImage'). '/uploads/product/' . $product->image;
 
         $brand = Brand::where('id', $product->brand_id)->first();
         $image = Productimage::where('product_id', $request->id)->get();
@@ -114,7 +114,7 @@ class HomeController extends Controller
         $arr_img = [];
         array_push($arr_img, $product->image);
         foreach($image as $img) {
-            $img->product_image_name = config('app.linkImage'). 'product_image/'.$img->product_image_name;
+            $img->product_image_name = config('app.linkImage'). '/uploads/product_image/'.$img->product_image_name;
             array_push($arr_img, $img->product_image_name);
         }
 
@@ -404,7 +404,7 @@ class HomeController extends Controller
                 "id" => $vc->id,
                 "code" => $vc->code,
                 "name" => $vc->name,
-                "image" => config('app.linkImage'). 'voucher/' . $vc->image,
+                "image" => config('app.linkImage'). '/uploads/voucher/' . $vc->image,
                 "start_date" => $vc->starts_at,
                 "end_date" => $vc->expires_at,
                 "minimum_order" => $vc->minimum_order,
@@ -507,7 +507,7 @@ class HomeController extends Controller
                     ->limit(8)
                     ->get();
         foreach($product as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
         $dataCategory='';
         if($category) {
@@ -608,7 +608,7 @@ class HomeController extends Controller
                         'detail_amount' => $dt->detail_amount,
                         'product_id' => $product->id,
                         'product_name' => $product->name,
-                        'product_image' => config('app.linkImage'). 'product/' . $product->image,
+                        'product_image' => config('app.linkImage'). '/uploads/product/' . $product->image,
                         'rate' => $userRate
                     ];
                     array_push($arr, $params);
@@ -661,7 +661,7 @@ class HomeController extends Controller
             ->where('wishlist.user_id', $request)->orderBy('wishlist.id','asc')->get();
 
         foreach($wishlists as $pr) {
-            $pr->image = config('app.linkImage'). 'product/' . $pr->image;
+            $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
 
         $sum_quantity = 0;
@@ -705,7 +705,7 @@ class HomeController extends Controller
                    'rate_comment' => $value->rate_comment,
                    'date' => $value->created_at,
                    'name' => $user->name,
-                   'image' => config('app.linkImage') . 'user/' . $user->image
+                   'image' => config('app.linkImage') . '/uploads/user/' . $user->image
                ];
            });
        }
@@ -729,7 +729,7 @@ class HomeController extends Controller
 
             return $params = [
                 "author" => $user->name,
-                "avatar" => config('app.linkImage'). 'user/' . $user->image,
+                "avatar" => config('app.linkImage'). '/uploads/user/' . $user->image,
                 "content" => $value->content,
                 "datetime" => $value->created_at
             ];

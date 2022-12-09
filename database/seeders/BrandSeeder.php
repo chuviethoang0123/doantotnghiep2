@@ -17,42 +17,42 @@ class BrandSeeder extends Seeder
     {
         $brand = new Brand();
         $brand->name = 'Sunhouse1';
-        $brand->image = '1.jfif';
+        $brand->image = '1.jpg';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse2';
-        $brand->image = '2.jfif';
+        $brand->image = '2.png';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse3';
-        $brand->image = '3.jfif';
+        $brand->image = '1.jpg';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse4';
-        $brand->image = '8.jfif';
+        $brand->image = '2.png';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse5';
-        $brand->image = '4.png';
+        $brand->image = '1.jpg';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse6';
-        $brand->image = '5.png';
+        $brand->image = '2.png';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse7';
-        $brand->image = '6.png';
+        $brand->image = '1.jpg';
         $brand->save();
 
         $brand = new Brand();
         $brand->name = 'Sunhouse8';
-        $brand->image = '7.png';
+        $brand->image = '2.png';
         $brand->save();
     }
 }
