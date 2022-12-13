@@ -14,8 +14,9 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Storage;
-use Socialite;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -72,7 +73,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
-        $user->image = config('app.linkImage'). 'user/' . $user->image; 
+        $user->image = config('app.linkImage'). '/uploads/user/' . $user->image; 
         return $this->responseSuccess($user);
     }
 
@@ -87,13 +88,12 @@ class AuthController extends Controller
             $user->password = Hash::make($request->password);
         }
         if($request->hasFile('image')){
-            \Log::info($request->file('image'));
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('user/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
-            Storage::disk('s3')->delete('user/' . $user->image);
+            $path = $request->file('image')->move('uploads/user/', $fileNameToStore);
+            File::delete(public_path("uploads/user/".$user->image));
 
             $user->image = $fileNameToStore;
         }
@@ -113,7 +113,7 @@ class AuthController extends Controller
         return $this->responseSuccess($facebook);
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
         $getInfo = Socialite::driver('facebook')->stateless()->user();
         $user = User::where('facebook_id', $getInfo->id)->first();

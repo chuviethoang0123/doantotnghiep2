@@ -39,8 +39,8 @@ Route::post('rating', [HomeController::class, 'rating'])->name('api.home.rating'
 Route::post('comment', [HomeController::class, 'comment'])->name('api.comment');
 Route::post('info-order', [HomeController::class, 'infoOrder'])->name('api.infoOrder');
 
-Route::post('reset-password', [ResetPasswordController::class, '@sendMail']);
-Route::post('reset', [ResetPasswordController::class, '@reset']);
+Route::post('reset-password', [ResetPasswordController::class, 'sendMail']);
+Route::post('reset', [ResetPasswordController::class, 'reset']);
 
 
 //Login

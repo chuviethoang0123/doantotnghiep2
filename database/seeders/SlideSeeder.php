@@ -16,7 +16,7 @@ class SlideSeeder extends Seeder
     public function run()
     {
         $slide = new Slide();
-        $slide->image = '1.jfif';
+        $slide->image = '1.jpg';
         $slide->status = 0;
         $slide->save();
 
@@ -31,7 +31,7 @@ class SlideSeeder extends Seeder
         $slide->save();
 
         $slide = new Slide();
-        $slide->image = '4.png';
+        $slide->image = '4.jpg';
         $slide->status = 1;
         $slide->save();
 

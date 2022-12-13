@@ -60,7 +60,7 @@ class OrderController extends Controller
 
         $sum_price = 0;
         foreach($orderDetail as $od) {
-            $od->image = config('app.linkImage'). 'product/' . $od->image;
+            $od->image = config('app.linkImage'). '/uploads/product/' . $od->image;
             if(isset($od->discount)) {
                 $sum_price += ($od->price - (($od->discount /100) * $od->price)) * $od->quantity;
             } else {

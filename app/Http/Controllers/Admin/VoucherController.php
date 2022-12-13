@@ -23,14 +23,14 @@ class VoucherController extends Controller
         ->orderBy('id', 'DESC')->paginate(10);
         if ($voucher) {
             $voucher->getCollection()->transform(function ($value) {
-                $value->image = config('app.linkImage') . 'voucher/' . $value->image;
+                $value->image = config('app.linkImage') . '/uploads/voucher/' . $value->image;
                 return $value;
             });
         }
         return $this->responseSuccess($voucher);
     }
     public function deleteVoucher(Request $request) {
-        Storage::disk('s3')->delete('voucher/' . Voucher::find($request->id)->image);
+        File::delete(public_path("uploads/voucher/".Voucher::find($request->id)->image));
         Voucher::find($request->id)->delete();
         return $this->responseSuccess();
     }
@@ -41,7 +41,7 @@ class VoucherController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('voucher/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+            $path = $request->file('image')->move('uploads/voucher/', $fileNameToStore);
 
             $voucher = new Voucher;
             $voucher->image = $fileNameToStore;
@@ -73,8 +73,8 @@ class VoucherController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('voucher/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
-            Storage::disk('s3')->delete('voucher/' . $imageOld);
+            $path = $request->file('image')->move('uploads/voucher/', $fileNameToStore);
+            File::delete(public_path("uploads/voucher/".$imageOld));
 
             $voucher->image = $fileNameToStore;
             $voucher->name = $request->name;
@@ -119,7 +119,7 @@ class VoucherController extends Controller
                 'start' => $voucher->starts_at,
                 'end' => $voucher->expires_at,
             ];
-            $image = config('app.linkImage'). 'voucher/' . $voucher->image;
+            $image = config('app.linkImage'). '/uploads/voucher/' . $voucher->image;
             return $this->responseSuccess(['info' => $params,'image' => $image ]);
         } catch(\Throwable $th) {
             Log::info($th);

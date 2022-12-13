@@ -21,14 +21,14 @@ class BrandController extends Controller
                 return $params = [
                     'id' => $value->id,
                     'name' => $value->name,
-                    'image' => config('app.linkImage') . 'brand/' . $value->image,
+                    'image' => config('app.linkImage') . '/uploads/brand/' . $value->image,
                 ];
             });
         }
         return $this->responseSuccess($brand);
     }
     public function deleteBrand(Request $request) {
-        Storage::disk('s3')->delete('brand/' . ($request->id)->image);
+        File::delete(public_path("uploads/brand/".Brand::find($request->id)->image));
         Brand::find($request->id)->delete();
         return $this->responseSuccess();
     }
@@ -39,7 +39,7 @@ class BrandController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('brand/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+            $path = $request->file('image')->move('uploads/brand/', $fileNameToStore);
 
             $brand = new Brand;
             $brand->image = $fileNameToStore;
@@ -61,8 +61,8 @@ class BrandController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('brand/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
-            Storage::disk('s3')->delete('brand/' . $imageOld);
+            $path = $request->file('image')->move('uploads/brand/', $fileNameToStore);
+            File::delete(public_path("uploads/brand/".$imageOld));
 
             Brand::where('id',$brand_id)->update([
                 'image'=> $fileNameToStore,

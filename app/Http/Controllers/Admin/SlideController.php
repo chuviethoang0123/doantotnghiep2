@@ -20,7 +20,7 @@ class SlideController extends Controller
                 return $params = [
                     'slide_id' => $value->id,
                     'slide_status' => $value->status,
-                    'slide_image' => config('app.linkImage') . 'slide/' . $value->image,
+                    'slide_image' => config('app.linkImage') . '/uploads/slide/' . $value->image,
                     'created_at' => $value->created_at,
                     'updated_at' => $value->updated_at
                 ];
@@ -29,7 +29,7 @@ class SlideController extends Controller
         return $this->responseSuccess($slide);
     }
     public function deleteSlide(Request $request) {
-        Storage::disk('s3')->delete('slide/' . Slide::find($request->id)->image);
+        File::delete(public_path("uploads/slide/".Slide::find($request->id)->image));
         Slide::find($request->id)->delete();
         return $this->responseSuccess();
     }
@@ -40,7 +40,7 @@ class SlideController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('slide/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+            $path = $request->file('image')->move('uploads/slide/', $fileNameToStore);
 
             $slide = new Slide;
             $slide->image = $fileNameToStore;
@@ -61,8 +61,8 @@ class SlideController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('slide/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
-            Storage::disk('s3')->delete('slide/' . $imageOld);;
+            $path = $request->file('image')->move('uploads/slide/', $fileNameToStore);
+            File::delete(public_path("uploads/slide/".$imageOld));
 
             Slide::where('id',$slide_id)->update([
                 'image'=> $fileNameToStore,

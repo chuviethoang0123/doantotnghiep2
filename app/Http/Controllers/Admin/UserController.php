@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Http\Requests\UserAdminRequest;
+use Illuminate\Support\Facades\File;
 use Storage;
 use JWTAuth;
 
@@ -40,7 +41,7 @@ class UserController extends Controller
 
     public function deleteUser(Request $request) {
         $user = User::find($request->id);
-        Storage::disk('s3')->delete('user/' . $user->image);
+        File::delete(public_path("uploads/user/".$user->image));
         $user->delete();
         return $this->responseSuccess();
     }

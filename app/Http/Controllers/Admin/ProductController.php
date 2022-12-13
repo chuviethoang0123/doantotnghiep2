@@ -28,7 +28,7 @@ class ProductController extends Controller
                 return $params = [
                     'id' => $value->id,
                     'name' => $value->name,
-                    'image' => config('app.linkImage') . 'product/' . $value->image,
+                    'image' => config('app.linkImage') . '/uploads/product/' . $value->image,
                     'price' => $value->price,
                     'discount' => $value->discount,
                     'selling' => $value->selling
@@ -38,7 +38,14 @@ class ProductController extends Controller
         return $this->responseSuccess($product);
     }
     public function deleteProduct(Request $request) {
-        Storage::disk('s3')->delete('product/' . Product::find($request->id)->image);
+        $product_image = Productimage::where('product_id', Product::find($request->id)->id)->get();
+        if ($product_image) {
+            foreach ($product_image as $image) {
+                File::delete(public_path("uploads/product_image/".$image->product_image_name));
+                $image->delete();
+            }
+        }
+        File::delete(public_path("uploads/product/".Product::find($request->id)->image));
         Product::find($request->id)->delete();
         return $this->responseSuccess();
     }
@@ -49,7 +56,7 @@ class ProductController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('product/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+            $path = $request->file('image')->move('uploads/product/', $fileNameToStore);
 
             $product = new Product;
             $product->image = $fileNameToStore;
@@ -80,7 +87,7 @@ class ProductController extends Controller
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $image->getClientOriginalExtension();
                     $fileNameToStore= $filename.'_'.time().'.'.$extension;
-                    Storage::disk('s3')->put('product_image/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+                    $path = $image->move('uploads/product_image/', $fileNameToStore);
 
                     $product_image = new Productimage;
                     $product_image->product_id = $product->id;
@@ -104,8 +111,8 @@ class ProductController extends Controller
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('image')->getClientOriginalExtension();
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
-            Storage::disk('s3')->put('product/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
-            Storage::disk('s3')->delete('product/' . $imageOld);
+            $path = $request->file('image')->move('uploads/product/', $fileNameToStore);
+            File::delete(public_path("uploads/product/".$imageOld));
 
 
             $product->image = $fileNameToStore;
@@ -130,7 +137,7 @@ class ProductController extends Controller
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $image->getClientOriginalExtension();
                     $fileNameToStore= $filename.'_'.time().'.'.$extension;
-                    Storage::disk('s3')->put('product_image/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+                    $path = $image->move('uploads/product_image/', $fileNameToStore);
 
                     $product_image = new Productimage;
                     $product_image->product_id = $product->id;
@@ -161,7 +168,7 @@ class ProductController extends Controller
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $image->getClientOriginalExtension();
                     $fileNameToStore= $filename.'_'.time().'.'.$extension;
-                    Storage::disk('s3')->put('product_image/' . $fileNameToStore, file_get_contents($request->file('image')), 'public');
+                    $path = $image->move('uploads/product_image/', $fileNameToStore);
 
                     $product_image = new Productimage;
                     $product_image->product_id = $product->id;
@@ -179,7 +186,7 @@ class ProductController extends Controller
             $listImage = [];
             foreach($product_image as $key => $image) {
                 $param = [
-                    'url' => config('app.linkImage'). 'product_image/' . $image->product_image_name,
+                    'url' => config('app.linkImage'). '/uploads/product_image/' . $image->product_image_name,
                     'uid' => '-'.$key,
                     'id' => $image->id,
                     'status' => 'done'
@@ -198,7 +205,7 @@ class ProductController extends Controller
                 'discount' => $product->discount,
                 'brand' => $product->brand_id,
                 'category' => $product->category_id,
-                'image' => config('app.linkImage'). 'product/' . $product->image,
+                'image' => config('app.linkImage'). '/uploads/product/' . $product->image,
                 'fileList' => $listImage
             ];
             return $this->responseSuccess($params);
@@ -209,7 +216,7 @@ class ProductController extends Controller
     }
     public function deleteImage(Request $request) {
         $image = Productimage::find($request->id);
-        Storage::disk('s3')->delete('product_image/' . $image->product_image_name);
+        File::delete(public_path("uploads/product_image/".$image->product_image_name));
         $image->delete();
         return $this->responseSuccess();
 
