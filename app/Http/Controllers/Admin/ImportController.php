@@ -11,7 +11,9 @@ use App\Models\Warehouse;
 class ImportController extends Controller
 {
     public function getProductImport(Request $request) {
-        $product = Product::where('name', 'like', "%$request->search%")->get();
+        $product = Product::select('product.*', 'warehouse.quantity as inventory')
+        ->join('warehouse','warehouse.product_id','=','product.id')
+        ->where('name', 'like', "%$request->search%")->get();
         foreach ($product as $pr) {
             $pr->image = config('app.linkImage'). '/uploads/product/' . $pr->image;
         }
