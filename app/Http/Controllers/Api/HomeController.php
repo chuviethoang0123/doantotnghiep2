@@ -390,8 +390,7 @@ class HomeController extends Controller
     }
 
     public function listVoucher() {
-        $voucher = Voucher::orderBy('id', 'desc')->take(4)->get();
-        Log::info($voucher);
+        $voucher = Voucher::orderBy('expires_at', 'desc')->take(4)->get();
         $params = [];
         $status = true;
         foreach($voucher as $vc) {

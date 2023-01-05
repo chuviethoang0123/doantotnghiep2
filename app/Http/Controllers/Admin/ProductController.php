@@ -19,7 +19,9 @@ class ProductController extends Controller
         $search = $request->search;
         $brand = $request->brand;
         $category = $request->category;
-        $product = Product::where('name', 'like', "%$search%")
+        $product = Product::select('product.*', 'warehouse.quantity as quantity')
+        ->join('warehouse','warehouse.product_id','=','product.id')
+        ->where('name', 'like', "%$search%")
         ->where('brand_id', 'like', "%$brand%")
         ->where('category_id', 'like', "%$category%")
         ->orderBy('id', 'DESC')->paginate(10);
@@ -31,7 +33,8 @@ class ProductController extends Controller
                     'image' => config('app.linkImage') . '/uploads/product/' . $value->image,
                     'price' => $value->price,
                     'discount' => $value->discount,
-                    'selling' => $value->selling
+                    'selling' => $value->selling,
+                    'inventory' => $value->quantity
                 ];
             });
         }
